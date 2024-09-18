@@ -10,7 +10,7 @@ export const useMarkAnnotationQuery = () => {
     queryKey: ["mark annotations"],
     queryFn: () =>
       axios.get<IMarkAnnotation[]>(
-        "http://localhost:8000/api/v1/mark-annotations/",
+        `${process.env.REACT_URL_API}/api/v1/mark-annotations/`,
       ),
   });
 
@@ -18,7 +18,7 @@ export const useMarkAnnotationQuery = () => {
     mutationKey: ["create mark annotation"],
     onMutate: (data: IMarkAnnotation) =>
       axios.post<IMarkAnnotation>(
-        "http://localhost:8000/api/v1/mark-annotations/",
+        `${process.env.REACT_URL_API}/api/v1/mark-annotations/`,
         data,
       ),
     onSuccess: () => client.invalidateQueries(["mark annotations"]),
@@ -28,7 +28,7 @@ export const useMarkAnnotationQuery = () => {
     mutationKey: ["update mark annotation"],
     onMutate: (data: Partial<IMarkAnnotation>) =>
       axios.patch<Partial<IMarkAnnotation>>(
-        "http://localhost:8000/api/v1/mark-annotations/",
+        `${process.env.REACT_URL_API}/api/v1/mark-annotations/`,
         data,
       ),
     onSuccess: () => client.invalidateQueries(["mark annotations"]),
