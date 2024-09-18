@@ -1,0 +1,31 @@
+@keyframes l1 {
+  100% {box-shadow: 0 0 0 30px rgb(0, 80, 179, 0)}
+}
+
+.Main {
+  height: calc(100vh - 168px);
+  border-radius: var(--br-md);
+  overflow: hidden;
+
+  :global {
+    .ant-skeleton {
+      width: 100%;
+      height: calc(100vh - 168px);
+
+      &-image {
+        width: 100%!important;
+        height: 100% !important;
+      }
+    }
+  }
+}
+
+.UserMarker {
+  aspect-ratio: 1;
+  width: 12px;
+  background-color: var(--c-primary);
+  border-radius: 999px;
+  border: 2px solid white;
+  box-shadow: 0 0 0 0 rgb(0, 80, 179, .2);
+  animation: l1 2s infinite;
+}

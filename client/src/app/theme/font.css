@@ -1,0 +1,20 @@
+@font-face {
+  font-family: 'App Font';
+  src: url('./nunito/Nunito-Bold.ttf');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'App Font';
+  src: url('./nunito/Nunito-Regular.ttf');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'App Font';
+  src: url('./nunito/Nunito-Light.ttf');
+  font-weight: 300;
+  font-style: normal;
+}

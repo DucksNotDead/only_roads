@@ -1,0 +1,12 @@
+:root {
+  --xs: 4px;
+  --sm: calc(var(--xs) * 2);
+  --md: calc(var(--sm) * 2);
+  --lg: calc(var(--sm) * 3);
+  --xl: calc(var(--sm) * 4);
+
+  --c-primary: rgb(0, 80, 179);
+  --c-grey: #AAB7C8;
+
+  --br-md: 18px
+}
