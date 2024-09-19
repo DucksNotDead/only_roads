@@ -1,3 +1,5 @@
+import { IMark } from "entities/mark";
+
 export interface IMarkDetailRef {
-  open: (markId: number) => void
+  open: (mark: IMark) => void;
 }

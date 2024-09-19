@@ -17,7 +17,7 @@ import {
 import Styles from "./MapView.module.scss";
 
 interface IProps {
-  onMarkClick: (markId: number) => void;
+  onMarkClick: (mark: IMark) => void;
 }
 
 export function MapView({ onMarkClick }: IProps) {
@@ -37,11 +37,16 @@ export function MapView({ onMarkClick }: IProps) {
     (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const id = Number(
-        (target.tagName === "IMG" ? target.parentElement : target)?.dataset.id,
+        (target.tagName === "IMG"
+          ? target.parentElement?.parentElement
+          : target.tagName === "OBJECT"
+            ? target.parentElement
+            : target
+        )?.dataset.id,
       );
-      onMarkClick(id);
+      onMarkClick(marks.find((m) => m.id === id)!);
     },
-    [onMarkClick],
+    [onMarkClick, marks],
   );
 
   useEffect(() => {

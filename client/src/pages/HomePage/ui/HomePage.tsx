@@ -8,8 +8,9 @@ import { IMarkDetailRef, MarkDetail } from "widgets/MarkDetail";
 import { useAddressQuery } from "entities/map";
 import { useCurrentGeo } from "shared/lib/useCurrentGeo";
 
-import Styles from './HomePage.module.scss'
+import Styles from "./HomePage.module.scss";
 import { MapPin } from "lucide-react";
+import { IMark } from "entities/mark";
 
 export function HomePage() {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -26,16 +27,19 @@ export function HomePage() {
     setIsCameraOpen((prevState) => !prevState);
   }, []);
 
-  const handleCardClick = useCallback((markId: number) => {
-    markDetailRef.current?.open(markId);
-  }, []);
+  const handleCardClick = useCallback(
+    (mark: IMark) => {
+      markDetailRef.current?.open(mark);
+    },
+    [],
+  );
 
   useEffect(() => {
     if (isCameraOpen) {
       setTimeout(() => {
         getPosition().then(({ coords: { longitude: lng, latitude: lat } }) => {
           getAddress({ lng, lat });
-        })
+        });
       }, 500);
     }
   }, [isCameraOpen]);

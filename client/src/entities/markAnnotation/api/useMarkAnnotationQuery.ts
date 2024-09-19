@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import { IMarkAnnotation } from "../model/types/markAnnotationTypes";
 
-export const useMarkAnnotationQuery = (mark_id?: string) => {
+export const useMarkAnnotationQuery = (mark_id?: number) => {
   const client = useQueryClient();
 
   const filter = mark_id ? `?mark_id=${mark_id}` : "";
