@@ -1,0 +1,21 @@
+.Main {
+  height: 100%;
+}
+
+.Content {
+  display: flex;
+  flex-direction: column;
+  padding: var(--md);
+  gap: var(--md);
+}
+
+.Address {
+  gap: var(--md);
+  svg {
+    color: var(--c-primary);
+  }
+  p {
+    font-size: 19px;
+    color: var(--c-primary);
+  }
+}

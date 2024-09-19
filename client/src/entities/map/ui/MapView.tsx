@@ -12,14 +12,25 @@ import { initMap } from "entities/map/config/initMap";
 import { Skeleton } from "antd";
 import { Map } from "lucide-react";
 
-export function MapView() {
+interface IProps {
+  onMarkClick: (markId: number) => void;
+}
+
+export function MapView({ onMarkClick }: IProps) {
   const [renderPending, setRenderPending] = useState(false);
   const { getPosition } = useCurrentGeo();
   const boxRef = useRef<HTMLDivElement>(null);
 
-  const handleMarkClick = useCallback((e: MouseEvent) => {
-    console.log(e);
-  }, []);
+  const handleMarkClick = useCallback(
+    (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const id = Number(
+        (target.tagName === "IMG" ? target.parentElement : target)?.dataset.id,
+      );
+      onMarkClick(id);
+    },
+    [onMarkClick],
+  );
 
   useEffect(() => {
     setRenderPending(() => true);
@@ -62,7 +73,7 @@ export function MapView() {
       map.addControl(
         new mapbox.GeolocateControl({
           positionOptions: {
-            enableHighAccuracy: true
+            enableHighAccuracy: true,
           },
           trackUserLocation: true,
           showUserHeading: false,

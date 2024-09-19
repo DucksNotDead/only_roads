@@ -12,12 +12,12 @@ export const useMarkQuery = () => {
       axios.get<IMark[]>(`${process.env.REACT_URL_API}/api/v1/marks/`),
   });
 
-  const { mutate } = useMutation({
+  const { mutate, isLoading: isCreateLoading } = useMutation({
     mutationKey: ["create mark"],
     onMutate: (data: IMark) =>
       axios.post<IMark>(`${process.env.REACT_URL_API}/api/v1/marks/`, data),
     onSuccess: () => client.invalidateQueries(["marks"]),
   });
 
-  return { data, isLoading, mutate };
+  return { data, isLoading, isCreateLoading, mutate };
 };
