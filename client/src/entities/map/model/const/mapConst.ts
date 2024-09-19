@@ -7,4 +7,4 @@ export const mapbox = mapboxgl
 export const mapContainerId = 'appMap'
 
 export const mapZoom = 12
-export const mapMinZoom = 5
+export const mapMinZoom = 3

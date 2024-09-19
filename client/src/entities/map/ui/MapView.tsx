@@ -1,5 +1,5 @@
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Styles from "./MapView.module.scss";
 import {
   mapbox,
@@ -11,7 +11,8 @@ import { useCurrentGeo } from "shared/lib/useCurrentGeo";
 import { initMap } from "entities/map/config/initMap";
 import { Skeleton } from "antd";
 import { Map } from "lucide-react";
-import { useMarkQuery } from "entities/mark";
+import { IMark, useMarkQuery } from "entities/mark";
+import { Map as IMap } from "mapbox-gl/dist/mapbox-gl";
 
 interface IProps {
   onMarkClick: (markId: number) => void;
@@ -20,12 +21,14 @@ interface IProps {
 export function MapView({ onMarkClick }: IProps) {
   const [renderPending, setRenderPending] = useState(false);
   const { getPosition } = useCurrentGeo();
+  const [isReady, setIsReady] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<IMap | null>(null);
 
-  const { data } = useMarkQuery()
+  const { data, isLoading } = useMarkQuery();
 
-  useEffect(() => {
-    console.log(data);
+  const marks = useMemo<IMark[]>(() => {
+    return data?.data ?? [];
   }, [data]);
 
   const handleMarkClick = useCallback(
@@ -44,6 +47,9 @@ export function MapView({ onMarkClick }: IProps) {
     getPosition().then(({ coords: { latitude, longitude } }) => {
       const map = initMap([longitude, latitude]);
 
+      mapRef.current = map;
+      setIsReady(() => true);
+
       map.on("load", () => {
         boxRef.current?.querySelector(".mapboxgl-ctrl-logo")?.remove();
         boxRef.current?.querySelector(".mapboxgl-ctrl-attrib")?.remove();
@@ -54,21 +60,6 @@ export function MapView({ onMarkClick }: IProps) {
           map.setMinZoom(mapMinZoom);
         }, 500);
       });
-
-      for (const i of [1, 2]) {
-        const markEl = document.createElement("div");
-        markEl.classList.add(Styles.MarkMarker);
-        markEl.dataset.id = String(i);
-        const image = document.createElement("img");
-        image.src = "";
-        markEl.append(image);
-
-        markEl.addEventListener("click", handleMarkClick);
-
-        new mapbox.Marker({ element: markEl })
-          .setLngLat([longitude + i * 0.001, latitude + i * 0.001])
-          .addTo(map);
-      }
 
       const userEl = document.createElement("div");
       userEl.classList.add(Styles.UserMarker);
@@ -91,9 +82,28 @@ export function MapView({ onMarkClick }: IProps) {
     });
   }, []);
 
+  useEffect(() => {
+    if (marks.length && mapRef.current && isReady) {
+      for (const mark of marks) {
+        const markEl = document.createElement("div");
+        markEl.classList.add(Styles.MarkMarker);
+        markEl.dataset.id = String(mark.id);
+        const image = document.createElement("img");
+        image.src = mark.image;
+        markEl.append(image);
+
+        markEl.addEventListener("click", handleMarkClick);
+
+        new mapbox.Marker({ element: markEl })
+          .setLngLat([mark.longitude, mark.latitude])
+          .addTo(mapRef.current);
+      }
+    }
+  }, [marks, isReady]);
+
   return (
     <div ref={boxRef} className={Styles.Main} id={mapContainerId}>
-      {renderPending && (
+      {(renderPending || isLoading) && (
         <Skeleton.Node active>
           <Map />
         </Skeleton.Node>
