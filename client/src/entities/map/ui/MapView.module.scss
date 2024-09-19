@@ -5,14 +5,14 @@
 }
 
 .Main {
-  height: calc(100vh - 172px);
+  height: calc(100vh - 200px);
   border-radius: var(--br-md);
   overflow: hidden;
 
   :global {
     .ant-skeleton {
       width: 100%;
-      height: calc(100vh - 168px);
+      height: calc(100vh - 200px);
 
       &-image {
         width: 100% !important;

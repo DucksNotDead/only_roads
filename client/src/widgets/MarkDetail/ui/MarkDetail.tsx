@@ -1,11 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useState,
-} from "react";
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useState } from "react";
 import { IMarkDetailRef } from "widgets/MarkDetail";
 import { Modal, Table } from "antd";
 import { useMarkAnnotationQuery } from "entities/markAnnotation";
@@ -38,7 +31,7 @@ export const MarkDetail = forwardRef<IMarkDetailRef>(({}, ref) => {
   const open = useCallback<IMarkDetailRef["open"]>(
     ({ id, image, longitude, latitude }) => {
       setMarkDetail(() => ({ id, image }));
-      getAddress({ lng: longitude, lat: longitude });
+      getAddress({ lng: longitude, lat: latitude });
     },
     [getAddress],
   );
@@ -68,14 +61,14 @@ export const MarkDetail = forwardRef<IMarkDetailRef>(({}, ref) => {
   return (
     <Modal
       title={title}
-      closable={false}
       destroyOnClose
       open={isOpen}
       onCancel={handleCancel}
       centered
-      height={450}
+      styles={{ body: { maxHeight: 400, overflow: 'auto' }  }}
+      footer={''}
     >
-      <img src={address} alt="mark detail" />
+      <img src={markDetail?.image?.replace('http', 'https')} alt="mark detail" style={{ width: '100%' }} />
       <Table
         dataSource={data}
         columns={columns}

@@ -6,7 +6,6 @@ import { IMark, useMarkQuery } from "entities/mark";
 import { Map } from "lucide-react";
 import { Map as IMap } from "mapbox-gl/dist/mapbox-gl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useCurrentGeo } from "shared/lib/useCurrentGeo";
 
 import {
   mapbox,
@@ -18,11 +17,11 @@ import Styles from "./MapView.module.scss";
 
 interface IProps {
   onMarkClick: (mark: IMark) => void;
+  currentPosition: [number, number] | null;
 }
 
-export function MapView({ onMarkClick }: IProps) {
+export function MapView({ onMarkClick, currentPosition }: IProps) {
   const [renderPending, setRenderPending] = useState(false);
-  const { getPosition } = useCurrentGeo();
   const [isReady, setIsReady] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<IMap | null>(null);
@@ -51,8 +50,8 @@ export function MapView({ onMarkClick }: IProps) {
 
   useEffect(() => {
     setRenderPending(() => true);
-    getPosition().then(({ coords: { latitude, longitude } }) => {
-      const map = initMap([longitude, latitude]);
+    if (currentPosition) {
+      const map = initMap(currentPosition);
 
       mapRef.current = map;
       setIsReady(() => true);
@@ -63,7 +62,7 @@ export function MapView({ onMarkClick }: IProps) {
 
         setRenderPending(() => false);
         setTimeout(() => {
-          map.flyTo({ zoom: mapZoom, center: [longitude, latitude] });
+          map.flyTo({ zoom: mapZoom, center: currentPosition });
           map.setMinZoom(mapMinZoom);
         }, 500);
       });
@@ -71,7 +70,7 @@ export function MapView({ onMarkClick }: IProps) {
       const userEl = document.createElement("div");
       userEl.classList.add(Styles.UserMarker);
 
-      new mapbox.Marker(userEl).setLngLat([longitude, latitude]).addTo(map);
+      new mapbox.Marker(userEl).setLngLat(currentPosition).addTo(map);
 
       map.addControl(new mapbox.NavigationControl(), "bottom-right");
 
@@ -86,8 +85,8 @@ export function MapView({ onMarkClick }: IProps) {
           showAccuracyCircle: false,
         }),
       );
-    });
-  }, []);
+    }
+  }, [currentPosition]);
 
   useEffect(() => {
     if (marks.length && isReady) {

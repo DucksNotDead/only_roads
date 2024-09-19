@@ -2,9 +2,11 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import { IMark } from "../model/types/markTypes";
+import { App } from "antd";
 
-export const useMarkQuery = () => {
+export const useMarkQuery = (onFinally?: () => void) => {
   const client = useQueryClient();
+  const { message } = App.useApp();
 
   const { data, isLoading } = useQuery({
     queryKey: ["marks"],
@@ -14,9 +16,15 @@ export const useMarkQuery = () => {
 
   const { mutate, isLoading: isCreateLoading } = useMutation({
     mutationKey: ["create mark"],
-    onMutate: (data: IMark) =>
+    onMutate: (
+      data: FormData,
+    ) =>
       axios.post<IMark>(`${process.env.REACT_APP_URL_API}/api/v1/marks/`, data),
-    onSuccess: () => client.invalidateQueries(["marks"]),
+    onSuccess: () => {
+      void client.invalidateQueries(["marks"]);
+      onFinally?.();
+    },
+    onError: () => void message.error("Не удалось загрузить фотографию"),
   });
 
   return { data, isLoading, isCreateLoading, mutate };
