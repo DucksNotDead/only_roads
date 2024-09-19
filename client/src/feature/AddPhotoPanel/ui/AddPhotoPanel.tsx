@@ -1,4 +1,4 @@
-import Camera, { IMAGE_TYPES } from "react-html5-camera-photo";
+import Camera, { FACING_MODES, IMAGE_TYPES } from "react-html5-camera-photo";
 import { Spin } from "antd";
 
 import Styles from "./AddPhotoPanel.module.scss";
@@ -23,7 +23,6 @@ export function AddPhotoPanel({ onTakePhoto }: IProps) {
       const file = new File([u8arr], Date.now().toString() + "." + mime?.split('/')[1], {
         type: mime,
       });
-      console.log(file);
       onTakePhoto(file);
     },
     [onTakePhoto],
@@ -33,6 +32,7 @@ export function AddPhotoPanel({ onTakePhoto }: IProps) {
     <div className={Styles.CameraView}>
       <Spin />
       <Camera
+        idealFacingMode={FACING_MODES.ENVIRONMENT}
         onTakePhoto={handleTakePhoto}
         imageType={IMAGE_TYPES.JPG}
         isImageMirror
