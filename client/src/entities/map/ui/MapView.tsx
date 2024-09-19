@@ -91,13 +91,13 @@ export function MapView({ onMarkClick }: IProps) {
         markEl.classList.add(Styles.MarkMarker);
         markEl.dataset.id = String(mark.id);
         const image = document.createElement("object");
-        image.data = mark.image;
+        image.data = mark.image.replace("http", "https");
         image.type = "image/jpg";
         const fallback = document.createElement("img");
         fallback.src = "fallback.svg";
-        fallback.style.width = '20px'
-        fallback.style.height = '20px'
-        fallback.style.margin = '2px'
+        fallback.style.width = "20px";
+        fallback.style.height = "20px";
+        fallback.style.margin = "2px";
 
         image.append(fallback);
         markEl.append(image);
