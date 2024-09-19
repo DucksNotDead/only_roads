@@ -1,18 +1,20 @@
 import "mapbox-gl/dist/mapbox-gl.css";
+
+import { Skeleton } from "antd";
+import { initMap } from "entities/map/config/initMap";
+import { IMark, useMarkQuery } from "entities/mark";
+import { Map } from "lucide-react";
+import { Map as IMap } from "mapbox-gl/dist/mapbox-gl";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Styles from "./MapView.module.scss";
+import { useCurrentGeo } from "shared/lib/useCurrentGeo";
+
 import {
   mapbox,
   mapContainerId,
   mapMinZoom,
   mapZoom,
 } from "../model/const/mapConst";
-import { useCurrentGeo } from "shared/lib/useCurrentGeo";
-import { initMap } from "entities/map/config/initMap";
-import { Skeleton } from "antd";
-import { Map } from "lucide-react";
-import { IMark, useMarkQuery } from "entities/mark";
-import { Map as IMap } from "mapbox-gl/dist/mapbox-gl";
+import Styles from "./MapView.module.scss";
 
 interface IProps {
   onMarkClick: (markId: number) => void;
@@ -89,7 +91,9 @@ export function MapView({ onMarkClick }: IProps) {
         markEl.classList.add(Styles.MarkMarker);
         markEl.dataset.id = String(mark.id);
         const image = document.createElement("img");
-        image.src = mark.image;
+        image.src = mark.image.replace("http", "https");
+        console.log(image.src);
+
         markEl.append(image);
 
         markEl.addEventListener("click", handleMarkClick);
