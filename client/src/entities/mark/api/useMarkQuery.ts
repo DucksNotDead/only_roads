@@ -9,13 +9,13 @@ export const useMarkQuery = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["marks"],
     queryFn: () =>
-      axios.get<IMark[]>(`${process.env.REACT_URL_API}/api/v1/marks/`),
+      axios.get<IMark[]>(`${process.env.REACT_APP_URL_API}/api/v1/marks/`),
   });
 
   const { mutate, isLoading: isCreateLoading } = useMutation({
     mutationKey: ["create mark"],
     onMutate: (data: IMark) =>
-      axios.post<IMark>(`${process.env.REACT_URL_API}/api/v1/marks/`, data),
+      axios.post<IMark>(`${process.env.REACT_APP_URL_API}/api/v1/marks/`, data),
     onSuccess: () => client.invalidateQueries(["marks"]),
   });
 

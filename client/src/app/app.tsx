@@ -5,10 +5,12 @@ import { HomePage } from "../pages/HomePage";
 import { PageProvider } from "./providers/PageProvider";
 import "./theme/normalize.css";
 import "./theme/index.css";
+import { useMarkQuery } from "entities/mark";
+import { useEffect } from "react";
 
 const client = new QueryClient();
 export function App() {
-  return (
+   return (
     <QueryClientProvider client={client}>
       <DeviceProvider>
         <AntDProvider>

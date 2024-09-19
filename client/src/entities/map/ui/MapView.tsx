@@ -11,6 +11,7 @@ import { useCurrentGeo } from "shared/lib/useCurrentGeo";
 import { initMap } from "entities/map/config/initMap";
 import { Skeleton } from "antd";
 import { Map } from "lucide-react";
+import { useMarkQuery } from "entities/mark";
 
 interface IProps {
   onMarkClick: (markId: number) => void;
@@ -20,6 +21,12 @@ export function MapView({ onMarkClick }: IProps) {
   const [renderPending, setRenderPending] = useState(false);
   const { getPosition } = useCurrentGeo();
   const boxRef = useRef<HTMLDivElement>(null);
+
+  const { data } = useMarkQuery()
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   const handleMarkClick = useCallback(
     (e: MouseEvent) => {

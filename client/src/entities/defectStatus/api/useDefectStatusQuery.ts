@@ -10,7 +10,7 @@ export const useDefectStatusQuery = () => {
     queryKey: ["defect statuses"],
     queryFn: () =>
       axios.get<IDefectStatus[]>(
-        `${process.env.REACT_URL_API}/api/v1/defect-statuses/`,
+        `${process.env.REACT_APP_URL_API}/api/v1/defect-statuses/`,
       ),
   });
 
@@ -18,7 +18,7 @@ export const useDefectStatusQuery = () => {
     mutationKey: ["create defect status"],
     onMutate: (data: IDefectStatus) =>
       axios.post<IDefectStatus>(
-        `${process.env.REACT_URL_API}/api/v1/defect-statuses/`,
+        `${process.env.REACT_APP_URL_API}/api/v1/defect-statuses/`,
         data,
       ),
     onSuccess: () => client.invalidateQueries(["defect statuses"]),
