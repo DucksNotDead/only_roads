@@ -85,25 +85,31 @@ export function MapView({ onMarkClick }: IProps) {
   }, []);
 
   useEffect(() => {
-    if (marks.length && mapRef.current && isReady) {
+    if (marks.length && isReady) {
       for (const mark of marks) {
         const markEl = document.createElement("div");
         markEl.classList.add(Styles.MarkMarker);
         markEl.dataset.id = String(mark.id);
-        const image = document.createElement("img");
-        image.src = mark.image.replace("http", "https");
-        console.log(image.src);
+        const image = document.createElement("object");
+        image.data = mark.image;
+        image.type = "image/jpg";
+        const fallback = document.createElement("img");
+        fallback.src = "fallback.svg";
+        fallback.style.width = '20px'
+        fallback.style.height = '20px'
+        fallback.style.margin = '2px'
 
+        image.append(fallback);
         markEl.append(image);
 
         markEl.addEventListener("click", handleMarkClick);
 
         new mapbox.Marker({ element: markEl })
           .setLngLat([mark.longitude, mark.latitude])
-          .addTo(mapRef.current);
+          .addTo(mapRef.current!);
       }
     }
-  }, [marks, isReady]);
+  }, [marks, isReady, handleMarkClick]);
 
   return (
     <div ref={boxRef} className={Styles.Main} id={mapContainerId}>
