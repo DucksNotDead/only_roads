@@ -53,8 +53,8 @@ export const MarkDetail = forwardRef<IMarkDetailRef>(({}, ref) => {
   }, [statuses, defects]);
 
   const data = useMemo(() => {
-    return annotations?.data.map((a) => ({ ...a, key: a.id }));
-  }, [annotations]);
+    return annotations?.data.filter(a => a.mark_id === markDetail?.id).map((a) => ({ ...a, key: a.id }));
+  }, [annotations, markDetail?.id]);
 
   useImperativeHandle(ref, () => ({ open }));
 

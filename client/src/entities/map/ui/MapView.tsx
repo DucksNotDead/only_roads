@@ -25,6 +25,7 @@ export function MapView({ onMarkClick, currentPosition }: IProps) {
   const [isReady, setIsReady] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<IMap | null>(null);
+  const prevData = useRef<number | null>(null);
 
   const { data, isLoading } = useMarkQuery();
 
@@ -33,7 +34,7 @@ export function MapView({ onMarkClick, currentPosition }: IProps) {
   }, [data]);
 
   const handleMarkClick = useCallback(
-    (e: MouseEvent) => {
+    (e: any) => {
       const target = e.target as HTMLElement;
       const id = Number(
         (target.tagName === "IMG"
@@ -107,6 +108,7 @@ export function MapView({ onMarkClick, currentPosition }: IProps) {
         markEl.append(image);
 
         markEl.addEventListener("click", handleMarkClick);
+        markEl.addEventListener("touchend", handleMarkClick);
 
         new mapbox.Marker({ element: markEl })
           .setLngLat([mark.longitude, mark.latitude])

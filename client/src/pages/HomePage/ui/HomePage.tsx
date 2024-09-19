@@ -26,18 +26,22 @@ export function HomePage() {
     isLoading: addressPending,
   } = useAddressQuery();
 
+  const handleCardClick = useCallback((mark: IMark) => {
+    markDetailRef.current?.open(mark);
+  }, []);
+
   const { mutate: createMark, isCreateLoading } = useMarkQuery(() => {
     setIsCameraOpen(() => false);
-  });
+  }, mark => setTimeout(() => handleCardClick(mark), 500));
 
   const handleTakePhoto = useCallback(
     (file: File) => {
       if (currentPosition) {
-        const fd = new FormData()
-        fd.append('image', file)
-        fd.append('longitude', currentPosition[0].toString())
-        fd.append('latitude', currentPosition[1].toString())
-        createMark(fd)
+        const fd = new FormData();
+        fd.append("image", file);
+        fd.append("longitude", currentPosition[0].toString());
+        fd.append("latitude", currentPosition[1].toString());
+        createMark(fd);
       }
     },
     [currentPosition, createMark],
@@ -45,10 +49,6 @@ export function HomePage() {
 
   const toggleCameraOpen = useCallback(() => {
     setIsCameraOpen((prevState) => !prevState);
-  }, []);
-
-  const handleCardClick = useCallback((mark: IMark) => {
-    markDetailRef.current?.open(mark);
   }, []);
 
   useEffect(() => {
