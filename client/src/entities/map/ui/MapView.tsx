@@ -1,5 +1,5 @@
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Styles from "./MapView.module.scss";
 import {
   mapbox,
@@ -13,46 +13,73 @@ import { Skeleton } from "antd";
 import { Map } from "lucide-react";
 
 export function MapView() {
-  const [loadPending, setLoadPending] = useState(false);
+  const [renderPending, setRenderPending] = useState(false);
   const { getPosition } = useCurrentGeo();
   const boxRef = useRef<HTMLDivElement>(null);
 
+  const handleMarkClick = useCallback((e: MouseEvent) => {
+    console.log(e);
+  }, []);
+
   useEffect(() => {
-    setLoadPending(() => true)
+    setRenderPending(() => true);
     getPosition().then(({ coords: { latitude, longitude } }) => {
       const map = initMap([longitude, latitude]);
 
       map.on("load", () => {
         boxRef.current?.querySelector(".mapboxgl-ctrl-logo")?.remove();
         boxRef.current?.querySelector(".mapboxgl-ctrl-attrib")?.remove();
-        setLoadPending(() => false)
+
+        setRenderPending(() => false);
         setTimeout(() => {
-          map.flyTo({ zoom: mapZoom });
+          map.flyTo({ zoom: mapZoom, center: [longitude, latitude] });
           map.setMinZoom(mapMinZoom);
-        }, 500)
+        }, 500);
       });
+
+      for (const i of [1, 2]) {
+        const markEl = document.createElement("div");
+        markEl.classList.add(Styles.MarkMarker);
+        markEl.dataset.id = String(i);
+        const image = document.createElement("img");
+        image.src = "";
+        markEl.append(image);
+
+        markEl.addEventListener("click", handleMarkClick);
+
+        new mapbox.Marker({ element: markEl })
+          .setLngLat([longitude + i * 0.001, latitude + i * 0.001])
+          .addTo(map);
+      }
 
       const userEl = document.createElement("div");
       userEl.classList.add(Styles.UserMarker);
 
-      const userElPulser = document.createElement("div");
-      userElPulser.classList.add(Styles.UserMarkerPulser);
+      new mapbox.Marker(userEl).setLngLat([longitude, latitude]).addTo(map);
 
-      userEl.append(userElPulser);
+      map.addControl(new mapbox.NavigationControl(), "bottom-right");
 
-      const user = new mapbox.Marker({
-        element: userEl,
-      })
-        .setLngLat([longitude, latitude])
-        .addTo(map);
+      map.addControl(
+        new mapbox.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true,
+          showUserHeading: false,
+          showUserLocation: false,
+          showAccuracyCircle: false,
+        }),
+      );
     });
   }, []);
 
   return (
     <div ref={boxRef} className={Styles.Main} id={mapContainerId}>
-      <Skeleton.Node active>
-        <></>
-      </Skeleton.Node>
+      {renderPending && (
+        <Skeleton.Node active>
+          <Map />
+        </Skeleton.Node>
+      )}
     </div>
   );
 }

@@ -6,5 +6,5 @@ export const initMap = (userCoords: [number, number]) =>
     style: "mapbox://styles/mapbox/streets-v12",
     center: userCoords,
     zoom: 5,
-    language: "ru_RU",
+    language: "ru_RU"
   });
